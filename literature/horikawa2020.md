@@ -241,22 +241,221 @@ Visual (시각) → Semantic (의미) → Emotion (감정)
 
 ---
 
-## 9. 논문 읽기 질문
+## 9. Figure별 상세 분석
+
+### Figure 1: 실험 개요
+```
+┌─────────────────────────────────────────────────────────────┐
+│  2185개 감정 비디오 (무음)                                    │
+│         ↓                                                   │
+│  피험자 5명이 시청 (whole-brain fMRI 측정)                    │
+│         ↓                                                   │
+│  3가지 분석 방법:                                            │
+│  • Neural Decoding: 뇌 → 감정 예측                          │
+│  • Voxel-wise Encoding: 감정 → 뇌 활동 예측                  │
+│  • Unsupervised Modeling: 클러스터 구조 발견                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Figure 1B 핵심**: 34개 카테고리의 점수 분포
+- 각 비디오마다 여러 rater가 감정 평가
+- 카테고리: 0~1 비율 (해당 감정을 느낀 비율)
+- 차원: 1~9 Likert scale
+
+---
+
+### Figure 2: Neural Decoding 결과
+
+**핵심 발견**:
+1. **31/34개 카테고리**가 뇌에서 유의미하게 디코딩됨
+   - 실패: envy, contempt, guilt (비디오에서 잘 유발 안 됨)
+
+2. **Ensemble decoder**가 개별 영역보다 성능 좋음
+   - 카테고리: 84.1% 향상
+   - 차원: 74.3% 향상
+
+3. **감정별로 다른 뇌 영역 패턴**
+   - fear ≠ horror (유사해 보여도 다른 영역 사용)
+   - 개인 간 일관성 높음 (5명 모두 유사)
+
+**Figure 2G**: 감정 식별 정확도
+- 5-way identification: 71.4% (카테고리), 59.3% (차원)
+- Chance level: 20%
+
+---
+
+### Figure 3: 비디오 식별 분석
+
+**핵심**: 디코딩된 감정 점수로 2181개 비디오 중 어떤 걸 봤는지 맞출 수 있나?
+
+**결과**:
+- 카테고리 모델: **81.9%** 정확도
+- 차원 모델: **68.7%** 정확도
+- Chance: 50%
+
+**Figure 3D**: UMAP 시각화
+- 34차원 감정 공간 → 2차원으로 축소
+- 디코딩된 점수로 재구성한 맵이 원본과 유사
+- 상관계수: r = 0.46 (x축), r = 0.53 (y축)
+
+---
+
+### Figure 4: Voxel-wise Encoding 결과
+
+**핵심 질문**: 감정 점수로 각 복셀의 활동을 예측할 수 있는가?
+
+**결과**:
+- **368/370 영역**에서 카테고리 모델 > 차원 모델
+- **Amygdala에서도** 카테고리가 더 잘 예측!
+  - 전통적으로 amygdala = valence/arousal이라고 생각했으나...
+  - 실제로는 카테고리 정보가 더 많이 인코딩됨
+
+**Figure 4D**: Slope angle 분석
+- 45도보다 작으면 → 카테고리 승
+- 거의 모든 영역이 45도 미만
+
+---
+
+### Figure 5: 감정 vs 시각 vs 의미 특징 분리
+
+**핵심 질문**: 뇌가 감정을 인코딩하는가, 아니면 시각/의미 특징을 인코딩하는가?
+
+**3가지 모델 비교**:
+1. **Visual object model**: VGG 딥러닝 네트워크 출력
+2. **Semantic model**: 크라우드 소싱 의미 태그 (예: cats, indoor)
+3. **Emotion model**: 34개 감정 카테고리 점수
+
+**결과 (Figure 5E)**:
+- **Visual cortex**: 시각 모델 승
+- **Temporal/Parietal**: 의미 모델 승
+- **Transmodal regions (DMN)**: 감정 모델 승!
+
+**Figure 5F-H: Principal Gradient 분석**
+```
+Unimodal ←──────────────────────────→ Transmodal
+(1차 감각)                              (고차 연합)
+   │                                        │
+   Visual        Semantic            Emotion
+   model         model               model
+   best          best                best
+```
+
+---
+
+### Figure 6: Unsupervised Modeling
+
+**핵심**: 레이블 없이 뇌 활동 패턴만으로 클러스터가 형성되는가?
+
+**방법**:
+1. 감정 관련 복셀만 선택
+2. UMAP으로 2D 시각화
+3. k-means clustering (k=27)
+
+**결과 (Figure 6A)**:
+- 뇌 활동 패턴이 **감정 카테고리별 클러스터** 형성
+- Sexual desire, Disgust, Aesthetic appreciation 등 명확한 클러스터
+- Valence, Arousal로 색칠하면 클러스터 불분명
+
+**Figure 6D-E: Entropy 분석**
+- 카테고리: 낮은 entropy (특정 클러스터에 집중)
+- 차원: 높은 entropy (여러 클러스터에 분산)
+
+---
+
+## 10. 핵심 방법론 상세
+
+### Ridge Regression (정규화 선형 회귀)
+
+```
+일반 선형 회귀:  min ||y - Xw||²
+Ridge 회귀:      min ||y - Xw||² + λ||w||²
+                                   ↑
+                            정규화 항 (과적합 방지)
+```
+
+**왜 필요한가?**
+- fMRI 데이터: 복셀 수(수만 개) >> 샘플 수(2181개)
+- 과적합 위험 높음
+- λ가 가중치 크기 제한 → 일반화 성능 향상
+
+### UMAP vs PCA
+
+| 특성 | PCA | UMAP |
+|------|-----|------|
+| 방식 | 선형 변환 | 비선형 manifold learning |
+| 보존 | 전역 분산 | 지역 구조 + 전역 구조 |
+| 시각화 | 클러스터 불명확 | 클러스터 명확 |
+| 속도 | 빠름 | 중간 |
+
+### Cross-Validation (6-fold)
+
+```
+데이터를 6등분:
+[1][2][3][4][5][6]
+
+Round 1: [1]이 test, [2-6]이 train
+Round 2: [2]가 test, [1,3-6]이 train
+...
+Round 6: [6]이 test, [1-5]가 train
+
+→ 모든 데이터가 한 번씩 test로 사용됨
+→ 과적합 방지 + 일반화 성능 추정
+```
+
+---
+
+## 11. 논문의 Limitations (저자들이 언급)
+
+1. **감정 레이블이 피험자 본인 것이 아님**
+   - 크라우드 워커 평가 ≠ fMRI 피험자 경험
+   - 개인차 반영 어려움
+
+2. **1인칭 vs 3인칭 감정 혼재**
+   - 본인이 느끼는 감정 vs 타인 감정 추론
+   - Theory of Mind 영역과 겹침
+
+3. **시선 추적 없음**
+   - 감정에 따라 시선 패턴이 다를 수 있음
+   - 이게 뇌 활동에 영향 줄 수 있음
+
+4. **반복 측정 없음**
+   - 각 비디오 1회만 제시
+   - noise ceiling 추정 불가
+
+---
+
+## 12. 데이터/코드 접근
+
+**공개 자료**:
+- GitHub: https://github.com/KamitaniLab/EmotionVideoNeuralRepresentation
+- OpenNeuro: https://openneuro.org/datasets/ds002425
+- Mendeley Data: https://doi.org/10.17632/jbk2r73mzh.1
+
+---
+
+## 13. 논문 읽기 질문
 
 > 논문 정독하면서 생기는 질문들을 여기에 기록
 
-### 아직 이해 안 되는 부분
-- [ ] Ridge regression이 정확히 어떻게 작동하는지?
-- [ ] UMAP은 PCA와 뭐가 다른지?
-- [ ] Principal Gradient가 무엇인지?
-- [ ] Cross-validation의 fold 수는 어떻게 정했는지?
+### 이해된 부분 ✓
+- [x] Ridge regression이 정확히 어떻게 작동하는지
+- [x] UMAP은 PCA와 뭐가 다른지
+- [x] Principal Gradient가 무엇인지
+- [x] Cross-validation의 fold 수 (6-fold)
 
 ### 더 알고 싶은 부분
-- [ ] 34개 카테고리는 어떻게 선정했는지?
+- [ ] 34개 카테고리는 어떻게 선정했는지? → Cowen & Keltner (2017) 참조 필요
+- [ ] VGG 네트워크의 어떤 레이어를 사용했는지?
+- [ ] HCP360 parcellation의 상세 정보
 - [ ] 다른 연구에서도 비슷한 결과가 나왔는지?
-- [ ] 이 논문 이후 후속 연구는?
+
+### 나의 질문/생각
+-
+-
+-
 
 ---
 
 *작성일: 2026-01-03*
-*상태: 초안 (논문 정독 후 업데이트 예정)*
+*최종 업데이트: 2026-01-03 (논문 정독 완료)*
+*상태: Figure별 분석 완료*
