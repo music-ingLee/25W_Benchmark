@@ -107,8 +107,8 @@
 
 - [x] Git repository 생성
 - [x] Knowledge base 폴더 구조 구축
-- [x] 논문 정독 및 Figure별 분석
-- [x] 연구 아이디어 및 한계점 문서화
+- [ ] 논문 정독 (진행 중)
+- [ ] 연구 아이디어 및 한계점 분석
 - [ ] Phase 1-3 개념 학습
 - [ ] 데이터 탐색 및 시각화
 - [ ] Benchmark 구현
