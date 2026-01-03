@@ -56,33 +56,62 @@
 
 ## 학습 로드맵
 
-### Phase 1: 기초 개념
-- [ ] fMRI 원리와 BOLD 신호
-- [ ] 뇌 영역 해부학 기초
-- [ ] 감정 이론 (Basic vs. Dimensional)
+### Phase 1: 정서과학 (Affective Science) 기초
+- [ ] 감정 이론: Basic Emotion vs. Dimensional vs. Constructionist
+- [ ] Valence-Arousal 모델과 그 한계
+- [ ] 34개 감정 카테고리의 의미와 선정 근거 (Cowen & Keltner, 2017)
+- [ ] 감정의 신경 기반: 편도체, 전전두엽, Default Mode Network
 
-### Phase 2: 분석 방법론
-- [ ] Linear regression과 regularization
-- [ ] Encoding vs. Decoding 프레임워크
-- [ ] Cross-validation과 모델 평가
+### Phase 2: 통계학 기초 → 심화
+- [ ] **기초**: 평균, 분산, 상관계수, p-value의 의미
+- [ ] **회귀분석**: Linear regression이란? (예측 vs 설명)
+- [ ] **정규화**: Ridge/Lasso regression - 왜 필요한가?
+- [ ] **모델 평가**: Train/Test split, Cross-validation, 과적합
+- [ ] **다변량 분석**: 고차원 데이터 다루기, 차원의 저주
+- [ ] **비모수 검정**: Permutation test의 원리
 
-### Phase 3: 논문 심층 분석
-- [ ] Figure별 상세 해석
-- [ ] 통계 방법 이해
+### Phase 3: 머신러닝 / 딥러닝 (ML/DL)
+- [ ] **ML 기초**: Supervised vs. Unsupervised learning
+- [ ] **분류 vs 회귀**: 언제 어떤 걸 쓰는가?
+- [ ] **신경망 기초**: Perceptron → MLP → CNN
+- [ ] **딥러닝 실습**: PyTorch 기초, 간단한 모델 구현
+- [ ] **뇌 데이터에 DL 적용**: 3D CNN, Graph Neural Network 소개
+
+### Phase 4: 논문 심층 분석
+- [ ] Figure별 상세 해석 ✅ (진행 중)
+- [ ] 방법론 깊이 이해: encoding/decoding 프레임워크
+- [ ] 통계적 유의성 검정 방법
 - [ ] 한계점과 후속 연구 방향
 
-### Phase 4: Benchmark 구현
-- [ ] 데이터 전처리
-- [ ] 모델 구현
-- [ ] 결과 재현 및 확장
+### Phase 5: Benchmark 구현 (실습)
+
+**목표**: 논문의 분석을 직접 재현하고 개선하기
+
+#### Step 1: 데이터 탐색
+- [ ] CSV 파일 로드 및 구조 파악
+- [ ] 감정 점수 분포 시각화
+- [ ] 결측치/이상치 확인
+
+#### Step 2: 논문 재현 (Ridge Regression)
+- [ ] Encoding 모델 구현: 감정 점수 → 뇌 활동 예측
+- [ ] Decoding 모델 구현: 뇌 활동 → 감정 점수 예측
+- [ ] Cross-validation으로 성능 평가
+- [ ] 논문 Figure와 결과 비교
+
+#### Step 3: 확장 (ML/DL 적용)
+- [ ] 딥러닝 모델로 encoding/decoding 시도
+- [ ] 카테고리 vs 차원 모델 성능 비교
+- [ ] 새로운 분석 아이디어 적용
 
 ## 진행 상황
 
 - [x] Git repository 생성
 - [x] Knowledge base 폴더 구조 구축
-- [ ] 논문 정독 및 정리
-- [ ] 연구 아이디어 도출
-- [ ] 데이터 탐색 및 분석
+- [x] 논문 정독 및 Figure별 분석
+- [x] 연구 아이디어 및 한계점 문서화
+- [ ] Phase 1-3 개념 학습
+- [ ] 데이터 탐색 및 시각화
+- [ ] Benchmark 구현
 
 ---
 
