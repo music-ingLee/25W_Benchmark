@@ -1,0 +1,9 @@
+# 큰 파일들 (GitHub 용량 제한)
+*.pdf
+*.tar.gz
+
+# macOS 시스템 파일
+.DS_Store
+
+# Claude Code 설정 (개인 설정)
+.claude/
